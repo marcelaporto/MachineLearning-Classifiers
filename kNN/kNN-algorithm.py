@@ -1,5 +1,6 @@
 
 ## HANDLE DATA
+
 #  load our data file
 # split the data into a training dataset and a test dataset
 # training dataset: kNN can use to make predictions
@@ -22,6 +23,7 @@ def loadDataset(filename, split, trainingSet=[] , testSet=[]):
 	            testSet.append(dataset[x])
 
 ## SIMILARITIES
+
 # In order to make predictions we need to calculate the similarity between any two given data instances.
 # We'll use the Euclidean distance measure.
 # Additionally, we want to control which fields to include in the distance calculation. Specifically, we only want to include the first 4 attributes. One approach is to limit the euclidean distance to a fixed length, ignoring the final dimension
@@ -54,6 +56,27 @@ def getNeighbors(trainingSet, testInstance, k):
 		neighbors.append(distances[x][0])
 	return neighbors
 
+## RESPONSE
+
+# Now that we have the neighbors, we use the majority vote to define the prediction of the feature vector
+# getResponse function generates a hashmap of neighbors and occurences; then, it sorts the votes to a list of tuples
+# eg. of sortedVotes: [('a', 2), ('b', 1)]
+
+import operator
+def getResponse(neighbors):
+	classVotes = {}
+	for x in range(len(neighbors)):
+		response = neighbors[x][-1]
+		if response in classVotes:
+			classVotes[response] += 1
+		else:
+			classVotes[response] = 1
+	sortedVotes = sorted(classVotes.iteritems(), key=operator.itemgetter(1), reverse=True)
+	return sortedVotes[0][0]
+
+
+
+
 
 ### DRIVER CODE ###
 
@@ -76,3 +99,8 @@ testInstance = [5, 5, 5]
 k = 1
 neighbors = getNeighbors(trainSet, testInstance, 1)
 print(neighbors)
+
+## RESPONSE
+neighbors = [[1,1,1,'a'], [2,2,2,'a'], [3,3,3,'b']]
+response = getResponse(neighbors)
+print(response)
