@@ -38,14 +38,17 @@ def euclideanDistance(instance1, instance2, length):
 # Now that we have a similarity measure, we can use it collect the k most similar instances for a given unseen instance.
 # getNeighbors returns k most similar neighbors from the training set for a given test instance (using the already defined euclideanDistance function)
 
-import operator
+import operator # used for sorting
 def getNeighbors(trainingSet, testInstance, k):
 	distances = []
 	length = len(testInstance)-1
 	for x in range(len(trainingSet)):
 		dist = euclideanDistance(testInstance, trainingSet[x], length)
+        #distances: list of tuples w/ instance of trainingSet(in list form) and euclidian distance(float)
+        # eg: [([4, 4, 4, 'b'], 1.4142135623730951), ([2, 2, 2, 'a'], 4.242640687119285)]
 		distances.append((trainingSet[x], dist))
 	distances.sort(key=operator.itemgetter(1))
+    # key= parameter of sort requires a key function; operator.itemgetter(1) will give you a function that grabs the first item from a list-like object.
 	neighbors = []
 	for x in range(k):
 		neighbors.append(distances[x][0])
@@ -62,8 +65,14 @@ print 'Train: ' + repr(len(trainingSet))
 print 'Test: ' + repr(len(testSet))
 
 ## SIMILARITIES
-
 data1 = [2, 2, 2, 'a']
 data2 = [4, 4, 4, 'b']
 distance = euclideanDistance(data1, data2, 3)
 print 'Distance: ' + repr(distance)
+
+## NEIGHBORS
+trainSet = [[2, 2, 2, 'a'], [4, 4, 4, 'b']]
+testInstance = [5, 5, 5]
+k = 1
+neighbors = getNeighbors(trainSet, testInstance, 1)
+print(neighbors)
